@@ -14,7 +14,7 @@ jobs:
   build-debug-apk:
     runs-on: ubuntu-latest
     env:
-      # Use the runner-provided temp folder (available at runtime)
+      # use runner-provided temp directory (available at runtime)
       ANDROID_SDK_ROOT: $RUNNER_TEMP/android-sdk
     steps:
       - name: Checkout
@@ -29,25 +29,37 @@ jobs:
       - name: Set up Flutter (pinned version)
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.10.6' # <-- pin a concrete Flutter version instead of 'stable'
+          flutter-version: '3.10.6'
 
-      - name: Install Android commandline tools and platform 28
+      - name: Install Android commandline tools and platform 28 (robust)
         run: |
-          set -e
-          echo "Installing Android commandline tools and platform 28..."
+          set -euo pipefail
+          echo "ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT}"
           mkdir -p "${ANDROID_SDK_ROOT}"
           cd "${ANDROID_SDK_ROOT}"
+          echo "Downloading command line tools..."
           wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline.zip
           unzip -q cmdline.zip -d cmdline-tools
+          # Ensure expected directory layout under cmdline-tools/latest
           mkdir -p cmdline-tools/latest
           if [ -d cmdline-tools/cmdline-tools ]; then
+            echo "Detected nested cmdline-tools layout, normalizing..."
             mv cmdline-tools/cmdline-tools/* cmdline-tools/latest/ || true
           else
+            echo "Moving extracted files to cmdline-tools/latest..."
             mv cmdline-tools/* cmdline-tools/latest/ || true
           fi
-          export PATH="${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:$PATH"
-          yes | sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" --licenses || true
-          sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" "platform-tools" "platforms;android-28" "build-tools;33.0.2" "emulator" "system-images;android-28;google_apis;x86_64"
+          SDKMANAGER="${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager"
+          echo "SDKMANAGER path: ${SDKMANAGER}"
+          if [ ! -f "${SDKMANAGER}" ]; then
+            echo "ERROR: sdkmanager not found at ${SDKMANAGER}"
+            ls -la "${ANDROID_SDK_ROOT}/cmdline-tools" || true
+            exit 1
+          fi
+          chmod +x "${SDKMANAGER}"
+          # Accept licenses and install packages
+          yes | "${SDKMANAGER}" --sdk_root="${ANDROID_SDK_ROOT}" --licenses || true
+          "${SDKMANAGER}" --sdk_root="${ANDROID_SDK_ROOT}" "platform-tools" "platforms;android-28" "build-tools;33.0.2" "emulator" "system-images;android-28;google_apis;x86_64"
         shell: bash
 
       - name: Add Android SDK to PATH
