@@ -2,9 +2,8 @@ name: Build Flutter Debug APK (Android 9 / API 28)
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    branches: [ dev ]
+  workflow_dispatch:
 
 permissions:
   contents: write
