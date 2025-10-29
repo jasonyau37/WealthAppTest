@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # Use runner context so the real path is expanded by GitHub before the job runs
-      ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
+      ANDROID_SDK_ROOT: $RUNNER_TEMP/android-sdk
     steps:
       - name: Checkout
         uses: actions/checkout@v4
