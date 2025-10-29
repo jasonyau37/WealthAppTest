@@ -31,14 +31,18 @@ jobs:
           FLUTTER_ARCHIVE="flutter_linux_${FLUTTER_VERSION}-stable.tar.xz"
           FLUTTER_URL="https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/${FLUTTER_ARCHIVE}"
           echo "Downloading Flutter ${FLUTTER_VERSION}..."
-          mkdir -p "${HOME}/flutter"
           wget -q "${FLUTTER_URL}" -O "/tmp/${FLUTTER_ARCHIVE}"
           tar -xf "/tmp/${FLUTTER_ARCHIVE}" -C "${HOME}"
-          echo "${HOME}/flutter/bin" >> $GITHUB_PATH
-          echo "${HOME}/flutter/bin/cache/dart-sdk/bin" >> $GITHUB_PATH
-          flutter --version
+          FLUTTER_HOME="${HOME}/flutter"
+          # Make sure flutter/bin is available in THIS step immediately:
+          export PATH="${FLUTTER_HOME}/bin:${FLUTTER_HOME}/bin/cache/dart-sdk/bin:${PATH}"
+          echo "PATH for this step: $PATH"
+          # Also persist for later steps:
+          echo "${FLUTTER_HOME}/bin" >> $GITHUB_PATH
+          echo "${FLUTTER_HOME}/bin/cache/dart-sdk/bin" >> $GITHUB_PATH
+          "${FLUTTER_HOME}/bin/flutter" --version
           # Precache android artifacts for faster builds
-          flutter precache --android
+          "${FLUTTER_HOME}/bin/flutter" precache --android
 
       - name: Install Android commandline tools and platform 28
         run: |
@@ -46,7 +50,6 @@ jobs:
           ANDROID_ROOT="${RUNNER_TEMP}/android-sdk"
           mkdir -p "${ANDROID_ROOT}"
           cd "${ANDROID_ROOT}"
-          # commandlinetools latest (update URL if needed)
           CLI_ZIP="commandlinetools-linux-9477386_latest.zip"
           wget -q "https://dl.google.com/android/repository/${CLI_ZIP}" -O cmdline.zip
           unzip -q cmdline.zip -d cmdline-tools
@@ -61,15 +64,14 @@ jobs:
           export PATH="${ANDROID_ROOT}/cmdline-tools/latest/bin:${PATH}"
           yes | "${SDKMANAGER}" --sdk_root="${ANDROID_ROOT}" --licenses || true
           "${SDKMANAGER}" --sdk_root="${ANDROID_ROOT}" "platform-tools" "platforms;android-28" "build-tools;33.0.2" "emulator" "system-images;android-28;google_apis;x86_64"
-          # Persist SDK locations for later steps
           echo "ANDROID_SDK_ROOT=${ANDROID_ROOT}" >> $GITHUB_ENV
           echo "${ANDROID_ROOT}/platform-tools" >> $GITHUB_PATH
           echo "${ANDROID_ROOT}/emulator" >> $GITHUB_PATH
           echo "${ANDROID_ROOT}/cmdline-tools/latest/bin" >> $GITHUB_PATH
+        shell: bash
 
       - name: Ensure pubspec has valid package name (optional check)
         run: |
-          # Ensure pubspec.yaml has a valid Dart package name (lowercase + underscores)
           if grep -q "^name: .*[A-Z]" pubspec.yaml; then
             echo "Invalid package name found in pubspec.yaml (contains uppercase). Replacing with wealth_app_test."
             sed -i 's/^name: .*/name: wealth_app_test/' pubspec.yaml
