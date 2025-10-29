@@ -14,8 +14,8 @@ jobs:
   build-debug-apk:
     runs-on: ubuntu-latest
     env:
-      # use runner-provided temp directory (available at runtime)
-      ANDROID_SDK_ROOT: $RUNNER_TEMP/android-sdk
+      # Use runner context so the real path is expanded by GitHub before the job runs
+      ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,7 +40,6 @@ jobs:
           echo "Downloading command line tools..."
           wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline.zip
           unzip -q cmdline.zip -d cmdline-tools
-          # Ensure expected directory layout under cmdline-tools/latest
           mkdir -p cmdline-tools/latest
           if [ -d cmdline-tools/cmdline-tools ]; then
             echo "Detected nested cmdline-tools layout, normalizing..."
@@ -53,6 +52,7 @@ jobs:
           echo "SDKMANAGER path: ${SDKMANAGER}"
           if [ ! -f "${SDKMANAGER}" ]; then
             echo "ERROR: sdkmanager not found at ${SDKMANAGER}"
+            ls -la "${ANDROID_SDK_ROOT}" || true
             ls -la "${ANDROID_SDK_ROOT}/cmdline-tools" || true
             exit 1
           fi
