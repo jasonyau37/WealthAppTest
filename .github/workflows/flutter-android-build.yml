@@ -14,7 +14,7 @@ jobs:
   build-debug-apk:
     runs-on: ubuntu-latest
     env:
-      # Use the runner-provided environment variable (available at runtime)
+      # Use the runner-provided temp folder (available at runtime)
       ANDROID_SDK_ROOT: $RUNNER_TEMP/android-sdk
     steps:
       - name: Checkout
@@ -26,10 +26,10 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
-      - name: Set up Flutter
+      - name: Set up Flutter (pinned version)
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          flutter-version: '3.10.6' # <-- pin a concrete Flutter version instead of 'stable'
 
       - name: Install Android commandline tools and platform 28
         run: |
@@ -37,7 +37,6 @@ jobs:
           echo "Installing Android commandline tools and platform 28..."
           mkdir -p "${ANDROID_SDK_ROOT}"
           cd "${ANDROID_SDK_ROOT}"
-          # Download command line tools (update URL if needed)
           wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline.zip
           unzip -q cmdline.zip -d cmdline-tools
           mkdir -p cmdline-tools/latest
