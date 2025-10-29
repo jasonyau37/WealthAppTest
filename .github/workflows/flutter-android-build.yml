@@ -5,12 +5,17 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build-debug-apk:
     runs-on: ubuntu-latest
     env:
-      ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
+      # Use the runner-provided environment variable (available at runtime)
+      ANDROID_SDK_ROOT: $RUNNER_TEMP/android-sdk
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,16 +31,22 @@ jobs:
         with:
           flutter-version: 'stable'
 
-      - name: Install Android SDK commandline tools and platform 28
+      - name: Install Android commandline tools and platform 28
         run: |
+          set -e
           echo "Installing Android commandline tools and platform 28..."
           mkdir -p "${ANDROID_SDK_ROOT}"
           cd "${ANDROID_SDK_ROOT}"
-          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline.zip
+          # Download command line tools (update URL if needed)
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline.zip
           unzip -q cmdline.zip -d cmdline-tools
           mkdir -p cmdline-tools/latest
-          mv cmdline-tools/cmdline-tools/* cmdline-tools/latest/ || true
-          export PATH="$PATH:${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin"
+          if [ -d cmdline-tools/cmdline-tools ]; then
+            mv cmdline-tools/cmdline-tools/* cmdline-tools/latest/ || true
+          else
+            mv cmdline-tools/* cmdline-tools/latest/ || true
+          fi
+          export PATH="${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:$PATH"
           yes | sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" --licenses || true
           sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" "platform-tools" "platforms;android-28" "build-tools;33.0.2" "emulator" "system-images;android-28;google_apis;x86_64"
         shell: bash
