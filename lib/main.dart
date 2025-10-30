@@ -4,7 +4,7 @@ void main() { runApp(const InsureAiApp()); }
 
 class InsureAiApp extends StatelessWidget { const InsureAiApp({super.key});
 
-@override Widget build(BuildContext context) { return MaterialApp( title: 'InsureAI Dashboard', debugShowCheckedModeBanner: false, theme: ThemeData( primaryColor: const Color(0xFF0A6ED1), colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0A6ED1)), scaffoldBackgroundColor: const Color(0xFFF6FAFC), ), home: const DashboardScreen(), ); } }
+@override Widget build(BuildContext context) { return MaterialApp( title: 'InsureAI Dashboard (test123)', debugShowCheckedModeBanner: false, theme: ThemeData( primaryColor: const Color(0xFF0A6ED1), colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0A6ED1)), scaffoldBackgroundColor: const Color(0xFFF6FAFC), ), home: const DashboardScreen(), ); } }
 
 class DashboardScreen extends StatelessWidget { const DashboardScreen({super.key});
 
@@ -59,5 +59,9 @@ class _AppDrawer extends StatelessWidget { const _AppDrawer();
 @override Widget build(BuildContext context) { return Drawer(child: Column(children: [ DrawerHeader(child: Row(children: [ Container(width: 42, height: 42, decoration: BoxDecoration(color: const Color(0xFF0A6ED1), borderRadius: BorderRadius.circular(6)), child: const Center(child: Text('IA', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)))), const SizedBox(width: 12), const Text('InsureAI', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)), ])), const Divider(height: 1), Expanded(child: ListView(children: const [ _NavTile(label: 'Dashboard', icon: Icons.dashboard, active: true), _NavTile(label: 'Clients', icon: Icons.people), _NavTile(label: 'Policies', icon: Icons.folder), _NavTile(label: 'Analytics', icon: Icons.bar_chart), _NavTile(label: 'Calculators', icon: Icons.calculate), _NavTile(label: 'Inbox', icon: Icons.mail), ])), const Divider(height: 1), const Padding(padding: EdgeInsets.all(12), child: _NavTile(label: 'Settings', icon: Icons.settings, dense: true)), ])); } }
 
 class _NavTile extends StatelessWidget { final String label; final IconData icon; final bool active; final bool dense; const _NavTile({required this.label, required this.icon, this.active = false, this.dense = false});
+
+@override Widget build(BuildContext context) { return Padding( padding: EdgeInsets.symmetric(vertical: dense ? 6 : 8.0), child: ListTile( dense: dense, leading: Icon(icon, color: active ? const Color(0xFF0A6ED1) : Colors.black54), title: Text(label, style: TextStyle(fontWeight: active ? FontWeight.w700 : FontWeight.w500, color: active ? const Color(0xFF0A6ED1) : Colors.black87)), tileColor: active ? Colors.blue.shade50 : null, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)), onTap: () {}, ), ); } }
+
+class _NavTileA extends StatelessWidget { final String label; final IconData icon; final bool active; final bool dense; const _NavTile({required this.label, required this.icon, this.active = false, this.dense = false});
 
 @override Widget build(BuildContext context) { return Padding( padding: EdgeInsets.symmetric(vertical: dense ? 6 : 8.0), child: ListTile( dense: dense, leading: Icon(icon, color: active ? const Color(0xFF0A6ED1) : Colors.black54), title: Text(label, style: TextStyle(fontWeight: active ? FontWeight.w700 : FontWeight.w500, color: active ? const Color(0xFF0A6ED1) : Colors.black87)), tileColor: active ? Colors.blue.shade50 : null, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)), onTap: () {}, ), ); } }
