@@ -19,9 +19,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           # Pin an exact Flutter version here instead of 'stable'
-          # Replace '3.10.6' with the output of `flutter --version` from your dev machine if you want exact parity
           flutter-version: '3.10.6'
-          # cache: true   # optional: enable caching in the action if you like
 
       - name: Get dependencies
         run: flutter pub get
@@ -48,10 +46,20 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.10.6'
-          # cache: true
 
       - name: Enable web support
         run: flutter config --enable-web
+
+      - name: Ensure web/ exists (create only if missing)
+        run: |
+          # If web/index.html is missing, add the web platform scaffolding.
+          # This avoids overwriting any existing web/ files in your repo.
+          if [ ! -f web/index.html ]; then
+            flutter create --platforms=web .
+            echo "web/ scaffolding created by flutter create"
+          else
+            echo "web/index.html already exists — skipping flutter create"
+          fi
 
       - name: Get dependencies
         run: flutter pub get
