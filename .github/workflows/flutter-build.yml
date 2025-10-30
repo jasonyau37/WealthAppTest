@@ -1,0 +1,71 @@
+name: Build Android APK and Flutter Web, deploy Web to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-apk:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'stable'
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build Android APK (release)
+        run: flutter build apk --release
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: build/app/outputs/flutter-apk/*.apk
+
+  build-and-deploy-web:
+    name: Build Web and Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'stable'
+
+      - name: Enable web support
+        run: flutter config --enable-web
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build Flutter web (release)
+        run: flutter build web --release
+
+      - name: Prepare publish directory (SPA fallback + disable Jekyll)
+        run: |
+          cp build/web/index.html build/web/404.html || true
+          touch build/web/.nojekyll
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./build/web
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'chore: deploy Flutter web to GitHub Pages — ${{ github.sha }}'
