@@ -15,10 +15,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Flutter
+      - name: Download and install Flutter SDK (pinned)
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          # Pin an exact Flutter version here instead of 'stable'
+          # Replace '3.10.6' with the output of `flutter --version` from your dev machine if you want exact parity
+          flutter-version: '3.10.6'
+          # cache: true   # optional: enable caching in the action if you like
 
       - name: Get dependencies
         run: flutter pub get
@@ -41,10 +44,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Flutter
+      - name: Download and install Flutter SDK (pinned)
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          flutter-version: '3.10.6'
+          # cache: true
 
       - name: Enable web support
         run: flutter config --enable-web
