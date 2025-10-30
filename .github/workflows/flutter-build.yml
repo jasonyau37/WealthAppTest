@@ -60,8 +60,11 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
-      - name: Build Flutter web (release)
-        run: flutter build web --release
+      - name: flutter clean
+        run: flutter clean
+
+      - name: Build Flutter web
+        run: flutter build web
 
       - name: Ensure relative base href in index.html
         run: |
