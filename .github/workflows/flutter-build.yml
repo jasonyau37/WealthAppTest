@@ -63,6 +63,15 @@ jobs:
       - name: Build Flutter web (release)
         run: flutter build web --release
 
+      - name: Ensure relative base href in index.html
+        run: |
+          if ! grep -q '<base href="./">' build/web/index.html; then
+            sed -i 's|<head>|<head>\n  <base href="./">|' build/web/index.html
+            echo "Inserted base href"
+          else
+            echo "base href already present"
+          fi
+
       - name: Prepare publish directory (SPA fallback + disable Jekyll)
         run: |
           cp build/web/index.html build/web/404.html || true
