@@ -2,7 +2,7 @@ name: Build Flutter Debug APK (self-contained)
 
 on:
   push:
-    branches: [ main ]
+    branches: [ dev ]
   workflow_dispatch:
 
 permissions:
