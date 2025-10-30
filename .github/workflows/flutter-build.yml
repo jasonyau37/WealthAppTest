@@ -60,6 +60,20 @@ jobs:
           else
             echo "web/index.html already exists — skipping flutter create"
           fi
+      - name: Ensure pubspec has valid package name (optional check)
+        run: |
+          if grep -q "^name: .*[A-Z]" pubspec.yaml; then
+            echo "Invalid package name found in pubspec.yaml (contains uppercase). Replacing with wealth_app_test."
+            sed -i 's/^name: .*/name: wealth_app_test/' pubspec.yaml
+            git --no-pager diff -- pubspec.yaml || true
+          else
+            echo "pubspec name OK."
+          fi
+
+      - name: Ensure platform folders exist (flutter create) with valid project name
+        run: |
+          # Force a correct android/ Gradle scaffold in CI
+          flutter create . --project-name wealth_app_test --platforms web --overwrite
 
       - name: Get dependencies
         run: flutter pub get
