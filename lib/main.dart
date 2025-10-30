@@ -1,241 +1,51 @@
-import 'dart:convert';
+import 'package:flutter/foundation.dart'; import 'package:flutter/material.dart';
 
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+void main() { runApp(const WealthAppMock()); }
 
-void main() {
-  runApp(const TodoApp());
-}
+class WealthAppMock extends StatelessWidget { const WealthAppMock({super.key});
 
-class TodoApp extends StatefulWidget {
-  const TodoApp({Key? key}) : super(key: key);
+@override Widget build(BuildContext context) { return MaterialApp( title: 'InsureAI - Dashboard', theme: ThemeData( brightness: Brightness.light, primaryColor: const Color(0xFF0A6ED1), colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue) .copyWith(secondary: const Color(0xFFFFC107)), scaffoldBackgroundColor: const Color(0xFFF6FAFC), useMaterial3: false, ), home: const DashboardPage(), debugShowCheckedModeBanner: false, ); } }
 
-  @override
-  State<TodoApp> createState() => _TodoAppState();
-}
+class DashboardPage extends StatelessWidget { const DashboardPage({super.key});
 
-class _TodoAppState extends State<TodoApp> {
-  ThemeMode _themeMode = ThemeMode.system;
+@override Widget build(BuildContext context) { return LayoutBuilder(builder: (context, constraints) { final wide = constraints.maxWidth >= 1000; return Scaffold( drawer: wide ? null : const _AppDrawer(), body: Row( children: [ if (wide) const _LeftNav(), // permanent left nav on wide screens Expanded( child: SafeArea( child: SingleChildScrollView( padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18), child: Column( crossAxisAlignment: CrossAxisAlignment.start, children: [ _TopBar(), const SizedBox(height: 18), _OverviewCardsRow(), const SizedBox(height: 22), _LowerBoxes(), ], ), ), ), ), ], ), ); }); } }
 
-  void _toggleTheme() {
-    setState(() {
-      _themeMode =
-          _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
-    });
-  }
+/// Top area: Welcome text + Add Task button class _TopBar extends StatelessWidget { @override Widget build(BuildContext context) { return Row( crossAxisAlignment: CrossAxisAlignment.start, children: [ Expanded( child: Column( crossAxisAlignment: CrossAxisAlignment.start, children: [ Text( 'Welcome back, Agent Lee!', style: Theme.of(context).textTheme.headline5?.copyWith( fontWeight: FontWeight.w800, color: Colors.black87, ), ), const SizedBox(height: 6), Text( "Here's your snapshot for ${_formatDate(DateTime.now())}.", style: Theme.of(context).textTheme.bodyMedium?.copyWith( color: Colors.black54, ), ), ]), ), ElevatedButton.icon( onPressed: () {}, icon: const Icon(Icons.add), label: const Text('+ Add Task'), style: ElevatedButton.styleFrom( backgroundColor: const Color(0xFF0A6ED1), padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 12.0), shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(8), ), ), ), ], ); }
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'WealthAppTest - Simple Todo',
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
-        brightness: Brightness.light,
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.indigo,
-      ),
-      themeMode: _themeMode,
-      home: HomePage(onToggleTheme: _toggleTheme),
-    );
-  }
-}
+static String _formatDate(DateTime d) => '${_monthName(d.month)} ${d.day}, ${d.year}';
 
-class Task {
-  String title;
-  String? note;
-  bool done;
+static String _monthName(int m) { const names = [ '', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ]; return names[m]; } }
 
-  Task({required this.title, this.note, this.done = false});
+/// Row of three summary cards (Hot Leads, Upcoming Renewals, MDRT Progress) class _OverviewCardsRow extends StatelessWidget { @override Widget build(BuildContext context) { return Wrap( spacing: 18, runSpacing: 12, children: [ _SummaryCard( title: 'Hot Leads', value: '7', accent: Colors.blue.shade700, ), _SummaryCard( title: 'Upcoming Renewals', value: '12', accent: Colors.cyan.shade600, ), _SummaryCard( title: 'MDRT Progress', value: '65%', accent: Colors.amber.shade700, ), ], ); } }
 
-  factory Task.fromJson(Map<String, dynamic> j) => Task(
-        title: j['title'] as String,
-        note: j['note'] as String?,
-        done: j['done'] as bool? ?? false,
-      );
+class _SummaryCard extends StatelessWidget { final String title; final String value; final Color accent; const _SummaryCard( {required this.title, required this.value, required this.accent});
 
-  Map<String, dynamic> toJson() => {
-        'title': title,
-        'note': note,
-        'done': done,
-      };
-}
+@override Widget build(BuildContext context) { final cardWidth = 300.0; return Container( width: cardWidth, height: 110, padding: const EdgeInsets.all(16), decoration: BoxDecoration( color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: const [ BoxShadow( color: Color.fromRGBO(16, 24, 40, 0.04), blurRadius: 10, offset: Offset(0, 6)) ], ), child: Row( children: [ // colored left edge Container( width: 6, height: double.infinity, decoration: BoxDecoration( color: accent, borderRadius: const BorderRadius.only( topLeft: Radius.circular(8), bottomLeft: Radius.circular(8), ), ), ), const SizedBox(width: 12), Expanded( child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [ Text(title, style: const TextStyle( fontWeight: FontWeight.w600, color: Colors.black54)), const Spacer(), Text(value, style: const TextStyle( fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)), ]), ) ], ), ); } }
 
-class HomePage extends StatefulWidget {
-  final VoidCallback onToggleTheme;
-  const HomePage({Key? key, required this.onToggleTheme}) : super(key: key);
+/// Lower row with Today's Tasks and AI Activity Feed class _LowerBoxes extends StatelessWidget { @override Widget build(BuildContext context) { return Wrap( spacing: 18, runSpacing: 18, children: [ ConstrainedBox( constraints: const BoxConstraints(minWidth: 360, maxWidth: 640), child: _CardBox( child: Column( crossAxisAlignment: CrossAxisAlignment.start, children: [ const Text("Today's Tasks", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18)), const SizedBox(height: 12), _TaskRow(label: 'Follow up with John Doe'), _TaskRow(label: 'Prepare proposal for Jane Smith'), _TaskRow(label: 'Send birthday message to Bob Chan'), ], ), ), ), ConstrainedBox( constraints: const BoxConstraints(minWidth: 360, maxWidth: 640), child: _CardBox( child: Column( crossAxisAlignment: CrossAxisAlignment.start, children: [ const Text("AI Activity Feed", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18)), const SizedBox(height: 12), _ActivityItem( leadingIcon: Icons.phone, title: RichText( text: TextSpan( style: const TextStyle(color: Colors.black87, fontSize: 14), children: [ const TextSpan(text: 'Call with '), TextSpan( text: 'Jane Smith', style: const TextStyle( fontWeight: FontWeight.bold, color: Color(0xFF0A6ED1))), const TextSpan( text: ' summarized. AI suggests updating her income. '), WidgetSpan( alignment: PlaceholderAlignment.middle, child: Container( padding: const EdgeInsets.symmetric( horizontal: 8, vertical: 4), margin: const EdgeInsets.only(left: 6), decoration: BoxDecoration( color: Colors.green.shade50, borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.green.shade200), ), child: const Text('Approve', style: TextStyle( color: Colors.green, fontSize: 12)), ), ), ], ), ), subtitle: '5 minutes ago', ), const SizedBox(height: 8), _ActivityItem( leadingIcon: Icons.description, title: RichText( text: const TextSpan( style: TextStyle(color: Colors.black87, fontSize: 14), children: [ TextSpan(text: 'New policy for '), TextSpan( text: 'Bob Chan', style: TextStyle( fontWeight: FontWeight.bold, color: Color(0xFF0A6ED1))), TextSpan(text: ' added via OCR scan.'), ], ), ), subtitle: '1 hour ago'), ], ), ), ), ], ); } }
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
+class _CardBox extends StatelessWidget { final Widget child; const _CardBox({required this.child});
 
-class _HomePageState extends State<HomePage> {
-  List<Task> _tasks = [];
-  bool _loading = true;
-  final _prefsKey = 'wealthapptest.tasks';
+@override Widget build(BuildContext context) { return Container( padding: const EdgeInsets.all(18), margin: const EdgeInsets.only(bottom: 6), decoration: BoxDecoration( color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: const [ BoxShadow( color: Color.fromRGBO(16, 24, 40, 0.04), blurRadius: 10, offset: Offset(0, 6)) ], ), child: child, ); } }
 
-  @override
-  void initState() {
-    super.initState();
-    _loadTasks();
-  }
+class _TaskRow extends StatefulWidget { final String label; const _TaskRow({required this.label});
 
-  Future<void> _loadTasks() async {
-    setState(() => _loading = true);
-    final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_prefsKey);
-    if (raw != null) {
-      try {
-        final arr = jsonDecode(raw) as List<dynamic>;
-        _tasks = arr.map((e) => Task.fromJson(e as Map<String, dynamic>)).toList();
-      } catch (e) {
-        _tasks = [];
-      }
-    } else {
-      _tasks = [];
-    }
-    setState(() => _loading = false);
-  }
+@override State<_TaskRow> createState() => _TaskRowState(); }
 
-  Future<void> _saveTasks() async {
-    final prefs = await SharedPreferences.getInstance();
-    final raw = jsonEncode(_tasks.map((t) => t.toJson()).toList());
-    await prefs.setString(_prefsKey, raw);
-  }
+class _TaskRowState extends State<_TaskRow> { bool checked = false; @override Widget build(BuildContext context) { return Padding( padding: const EdgeInsets.symmetric(vertical: 8.0), child: Row(children: [ Checkbox( value: checked, onChanged: (v) { setState(() { checked = v ?? false; }); }), Expanded(child: Text(widget.label)), ]), ); } }
 
-  void _addOrEditTask({Task? task, int? index}) async {
-    final titleController = TextEditingController(text: task?.title ?? '');
-    final noteController = TextEditingController(text: task?.note ?? '');
+class _ActivityItem extends StatelessWidget { final IconData leadingIcon; final Widget title; final String subtitle; const _ActivityItem( {required this.leadingIcon, required this.title, required this.subtitle});
 
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(task == null ? 'Add task' : 'Edit task'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: titleController,
-              autofocus: true,
-              decoration: const InputDecoration(labelText: 'Title'),
-            ),
-            TextField(
-              controller: noteController,
-              decoration: const InputDecoration(labelText: 'Note (optional)'),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
-          ElevatedButton(onPressed: () {
-            final title = titleController.text.trim();
-            if (title.isEmpty) return;
-            if (task == null) {
-              setState(() {
-                _tasks.add(Task(title: title, note: noteController.text.trim()));
-              });
-            } else {
-              setState(() {
-                _tasks[index!] = Task(title: title, note: noteController.text.trim(), done: task.done);
-              });
-            }
-            _saveTasks();
-            Navigator.pop(context, true);
-          }, child: const Text('Save')),
-        ],
-      ),
-    );
+@override Widget build(BuildContext context) { return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [ Container( padding: const EdgeInsets.all(8), margin: const EdgeInsets.only(right: 12), decoration: BoxDecoration( color: Colors.pink.shade50, borderRadius: BorderRadius.circular(8), ), child: Icon(leadingIcon, size: 18, color: Colors.pink.shade400), ), Expanded( child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [ title, const SizedBox(height: 6), Text(subtitle, style: const TextStyle(color: Colors.black45)), ]), ) ]); } }
 
-    if (result == true) {
-      // saved
-    }
-  }
+/// Left navigation - used as a Drawer on small screens or permanent column on wide screens. class _LeftNav extends StatelessWidget { const _LeftNav();
 
-  void _toggleDone(int index) {
-    setState(() {
-      _tasks[index].done = !_tasks[index].done;
-    });
-    _saveTasks();
-  }
+@override Widget build(BuildContext context) { return Container( width: 220, padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 12), decoration: const BoxDecoration( color: Colors.white, border: Border( right: BorderSide(color: Color(0xFFE8EEF3), width: 1), ), ), child: Column( crossAxisAlignment: CrossAxisAlignment.start, children: [ // Logo / title Padding( padding: const EdgeInsets.symmetric(horizontal: 12), child: Row( children: [ Container( width: 36, height: 36, decoration: BoxDecoration( color: const Color(0xFF0A6ED1), borderRadius: BorderRadius.circular(6), ), child: const Center( child: Text('IA', style: TextStyle( color: Colors.white, fontWeight: FontWeight.bold)), ), ), const SizedBox(width: 10), const Text('InsureAI', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)), ], ), ), const SizedBox(height: 20), Expanded( child: ListView( padding: const EdgeInsets.symmetric(vertical: 8), children: [ _NavItem(label: 'Dashboard', icon: Icons.dashboard, active: true), _NavItem(label: 'Clients', icon: Icons.people), _NavItem(label: 'Policies', icon: Icons.folder), _NavItem(label: 'Analytics', icon: Icons.bar_chart), _NavItem(label: 'Calculators', icon: Icons.calculate), _NavItem(label: 'Inbox', icon: Icons.mail), ], ), ), const SizedBox(height: 8), _NavItem(label: 'Settings', icon: Icons.settings, dense: true), ], ), ); } }
 
-  void _removeTask(int index) {
-    showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete task'),
-        content: const Text('Are you sure you want to delete this task?'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
-          ElevatedButton(onPressed: () {
-            setState(() {
-              _tasks.removeAt(index);
-            });
-            _saveTasks();
-            Navigator.pop(context, true);
-          }, child: const Text('Delete')),
-        ],
-      ),
-    );
-  }
+class _AppDrawer extends StatelessWidget { const _AppDrawer();
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Simple Todo'),
-        actions: [
-          IconButton(onPressed: widget.onToggleTheme, icon: const Icon(Icons.brightness_2)),
-          IconButton(onPressed: _loadTasks, icon: const Icon(Icons.refresh)),
-        ],
-      ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : _tasks.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text('No tasks yet', style: TextStyle(fontSize: 18)),
-                      const SizedBox(height: 8),
-                      ElevatedButton(
-                        onPressed: () => _addOrEditTask(),
-                        child: const Text('Add your first task'),
-                      )
-                    ],
-                  ),
-                )
-              : ListView.separated(
-                  itemCount: _tasks.length,
-                  separatorBuilder: (_, __) => const Divider(height: 1),
-                  itemBuilder: (context, i) {
-                    final t = _tasks[i];
-                    return ListTile(
-                      leading: Checkbox(value: t.done, onChanged: (_) => _toggleDone(i)),
-                      title: Text(
-                        t.title,
-                        style: TextStyle(
-                          decoration: t.done ? TextDecoration.lineThrough : TextDecoration.none,
-                        ),
-                      ),
-                      subtitle: t.note == null || t.note!.isEmpty ? null : Text(t.note!),
-                      trailing: PopupMenuButton<String>(
-                        onSelected: (v) {
-                          if (v == 'edit') _addOrEditTask(task: t, index: i);
-                          if (v == 'delete') _removeTask(i);
-                        },
-                        itemBuilder: (_) => [
-                          const PopupMenuItem(value: 'edit', child: Text('Edit')),
-                          const PopupMenuItem(value: 'delete', child: Text('Delete')),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _addOrEditTask(),
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-}
+@override Widget build(BuildContext context) { return Drawer( child: Column(children: [ DrawerHeader( child: Row(children: [ Container( width: 42, height: 42, decoration: BoxDecoration( color: const Color(0xFF0A6ED1), borderRadius: BorderRadius.circular(6)), child: const Center( child: Text('IA', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))), ), const SizedBox(width: 12), const Text('InsureAI', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)), ])), const Divider(height: 1), Expanded( child: ListView( children: const [ _NavItem(label: 'Dashboard', icon: Icons.dashboard, active: true), _NavItem(label: 'Clients', icon: Icons.people), _NavItem(label: 'Policies', icon: Icons.folder), _NavItem(label: 'Analytics', icon: Icons.bar_chart), _NavItem(label: 'Calculators', icon: Icons.calculate), _NavItem(label: 'Inbox', icon: Icons.mail), ], ), ), const Divider(height: 1), const Padding( padding: EdgeInsets.all(12), child: _NavItem(label: 'Settings', icon: Icons.settings, dense: true), ) ]), ); } }
+
+class _NavItem extends StatelessWidget { final String label; final IconData icon; final bool active; final bool dense; const _NavItem( {required this.label, required this.icon, this.active = false, this.dense = false});
+
+@override Widget build(BuildContext context) { final textStyle = TextStyle( fontWeight: active ? FontWeight.w700 : FontWeight.w500, color: active ? const Color(0xFF0A6ED1) : Colors.black87); return Padding( padding: EdgeInsets.symmetric(vertical: dense ? 6 : 8.0), child: ListTile( dense: dense, leading: Icon(icon, color: active ? const Color(0xFF0A6ED1) : Colors.black54), title: Text(label, style: textStyle), tileColor: active ? Colors.blue.shade50 : null, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)), onTap: () {}, ), ); } }
