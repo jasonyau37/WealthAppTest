@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 void main() { runApp(const InsureAiApp()); }
-
+abcd
 class InsureAiApp extends StatelessWidget { const InsureAiApp({super.key});
 
 @override Widget build(BuildContext context) { return MaterialApp( title: 'InsureAI Dashboard (test123)', debugShowCheckedModeBanner: false, theme: ThemeData( primaryColor: const Color(0xFF0A6ED1), colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0A6ED1)), scaffoldBackgroundColor: const Color(0xFFF6FAFC), ), home: const DashboardScreen(), ); } }
