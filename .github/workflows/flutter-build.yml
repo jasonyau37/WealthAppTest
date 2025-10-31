@@ -43,6 +43,12 @@ jobs:
           # Force a correct android/ Gradle scaffold in CI
           flutter create . --project-name wealth_app_test --platforms web --overwrite
 
+      - name: Show current commit
+        run: git log -l
+
+      - name: remove old service worker
+        run: rm -f build/web/flutter_service_worker.js
+
       - name: Enable web support
         run: flutter config --enable-web
 
@@ -64,7 +70,7 @@ jobs:
         run: flutter clean
 
       - name: Build Flutter web
-        run: flutter build web
+        run: flutter build web --release --base-href "/wealth_app_test/"
 
       - name: Ensure relative base href in index.html
         run: |
