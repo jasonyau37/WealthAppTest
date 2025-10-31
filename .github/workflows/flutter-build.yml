@@ -1,3 +1,4 @@
+contents:
 name: Build Android APK and Flutter Web, deploy Web to GitHub Pages
 
 # Grant the minimum write permissions required for the workflow to push to the repo and update Pages
@@ -38,27 +39,37 @@ jobs:
             echo "pubspec name OK."
           fi
 
-      - name: Ensure platform folders exist (flutter create) with valid project name
+      # -------------------------
+      # IMPORTANT CHANGE:
+      # Do NOT run `flutter create . --overwrite` — that WILL overwrite lib/main.dart and other files.
+      # If you need scaffolding for missing platforms, run `flutter create` WITHOUT --overwrite
+      # or create only the missing platform. Below we ensure web platform exists but do NOT overwrite user code.
+      # -------------------------
+      - name: Ensure web platform scaffold exists (no overwrite)
         run: |
-          # Force a correct android/ Gradle scaffold in CI
-          flutter create . --project-name wealth_app_test --platforms web --overwrite
+          # Create web scaffold only if missing (do NOT overwrite existing project files)
+          if [ ! -d web ]; then
+            echo "web/ missing — creating web platform scaffold"
+            flutter create --platforms=web .
+          else
+            echo "web/ already exists — skipping flutter create"
+          fi
 
       - name: Show current commit
-        run: git log
+        run: git log -1 --pretty=oneline
+
+      - name: Show lib/main.dart (debug) so we know what will be compiled
+        run: |
+          echo "---- lib/main.dart (first 200 lines) ----"
+          sed -n '1,200p' lib/main.dart || true
+          echo "---- end ----"
+          echo "git status:"
+          git status --porcelain
+          echo "git diff (if any):"
+          git --no-pager diff -- lib/main.dart || true
 
       - name: Enable web support
         run: flutter config --enable-web
-
-      - name: Ensure web/ exists (create only if missing)
-        run: |
-          # If web/index.html is missing, add the web platform scaffolding.
-          # This avoids overwriting any existing web/ files in your repo.
-          if [ ! -f web/index.html ]; then
-            flutter create --platforms=web .
-            echo "web/ scaffolding created by flutter create"
-          else
-            echo "web/index.html already exists — skipping flutter create"
-          fi
 
       - name: Get dependencies
         run: flutter pub get
@@ -69,8 +80,13 @@ jobs:
       - name: Build Flutter web
         run: flutter build web --release --base-href "/wealth_app_test/"
 
-      - name: debug
-        run: ls -ltr build/web
+      - name: debug build output
+        run: |
+          echo "build/web listing:"
+          ls -lR build/web || true
+          echo
+          echo "main.dart.js md5 and head:"
+          [ -f build/web/main.dart.js ] && { md5sum build/web/main.dart.js || true; head -c 512 build/web/main.dart.js | xxd | head -n 40 || true; } || echo "main.dart.js not found"
 
       - name: Ensure relative base href in index.html
         run: |
