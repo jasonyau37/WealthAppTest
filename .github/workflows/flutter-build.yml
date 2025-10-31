@@ -70,8 +70,7 @@ jobs:
         run: flutter build web --release --base-href "/wealth_app_test/"
 
       - name: debug
-        run: ls build/web
-          shasum -a 256 build/web/main.dart.js
+        run: ls -ltrh build/web
 
       - name: Ensure relative base href in index.html
         run: |
