@@ -87,7 +87,6 @@ jobs:
           cp build/web/index.html build/web/404.html || true
           touch build/web/.nojekyll
           ls -l build/web/main.dart.js
-          sha256sum build/web/main.dart.js (or shasum)
 
 
       - name: Deploy to GitHub Pages
