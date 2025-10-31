@@ -47,7 +47,9 @@ jobs:
         run: git log
 
       - name: remove old service worker
-        run: rm -f build/web/flutter_service_worker.js
+        run: |
+          ls build/web
+          rm -f build/web
 
       - name: Enable web support
         run: flutter config --enable-web
