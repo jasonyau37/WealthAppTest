@@ -70,7 +70,7 @@ jobs:
         run: flutter build web --release --base-href "/wealth_app_test/"
 
       - name: debug
-        run: ls -ltrh build/web
+        run: ls -ltr build/web
 
       - name: Ensure relative base href in index.html
         run: |
@@ -85,7 +85,7 @@ jobs:
         run: |
           cp build/web/index.html build/web/404.html || true
           touch build/web/.nojekyll
-          ls -l build/web/main.dart.js
+          ls -ltr build/web/main.dart.js
 
 
       - name: Deploy to GitHub Pages
