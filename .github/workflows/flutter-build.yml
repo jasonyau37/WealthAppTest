@@ -44,7 +44,7 @@ jobs:
           flutter create . --project-name wealth_app_test --platforms web --overwrite
 
       - name: Show current commit
-        run: git log -l
+        run: git log
 
       - name: remove old service worker
         run: rm -f build/web/flutter_service_worker.js
