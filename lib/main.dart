@@ -1,36 +1,152 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart'; import 'package:flutter/material.dart';
 
-void main() { runApp(const InsureAiApp()); }
-abcd
-class InsureAiApp extends StatelessWidget { const InsureAiApp({super.key});
 
-@override Widget build(BuildContext context) { return MaterialApp( title: 'InsureAI Dashboard (test123)', debugShowCheckedModeBanner: false, theme: ThemeData( primaryColor: const Color(0xFF0A6ED1), colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0A6ED1)), scaffoldBackgroundColor: const Color(0xFFF6FAFC), ), home: const DashboardScreen(), ); } }
 
-class DashboardScreen extends StatelessWidget { const DashboardScreen({super.key});
 
-@override Widget build(BuildContext context) { return LayoutBuilder(builder: (context, constrsfsfd raints.maxWidth >= 1000; retull : const _AppDrawer(), body: Row(children: [ if (isWide) const _LeftNav(), Expanded( child: SafeArea( child: SingleChildScrollView( padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18), child: Column( crossAxisAlignment: CrossAxisAlignment.start, children: const [ _TopHeader(), SizedBox(height: 18), _OverviewRow(), SizedBox(height: 22), _LowerRow(), ], ), ), ), ), ]), ); }); } }
 
-ialApp( title: 'InsureAI Dashboard (test123)', debugShowCheckedModeBanner: false, theme: ThemeData( primaryColor: const Color(0xFF0A6ED1), colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0A6ED1)), scaffoldBackgroundColor: const Color(0xFFF6FAFC), ), home: const DashboardScreen(), ); } }
 
-class DashboardasdsadsadkjljkScreen extends StatelkjjessWidget { const DashboardScreen({super.key});
+void main() { runApp(const WealthAppMock()); }
 
-@override Widget build(BuildContext context) { return LayoutBuilder(builder: (context, constrsfsfd raints.maxWidth >= 1000; retull : const _AppDrawer(), body: Row(children: [ if (isWide) const _LeftNav(), Expanded( child: SafeArea( child: SingleChildScrollView( padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18), child: Column( crossAxisAlignment: CrossAxisAlignment.start, children: const [ _TopHeader(), SizedBox(height: 18), _OverviewRow(), SizedBox(height: 22), _LowerRow(), ], ), ), ), ), ]), ); }); } }
 
-ialApp( title: 'InsureAI Dashboard (test123)', debugShowCheckedModeBanner: false, theme: ThemeData( primaryColor: const Color(0xFF0A6ED1), colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0A6ED1)), scaffoldBackgroundColor: const Color(0xFFF6FAFC), ), home: const DashboardScreen(), ); } }
 
-class DashboardScreen extends StatelessWidget { const DashboardScreen({super.key});
 
-@override Widget build(BuildContext context) { return LayoutBuilder(builder: (context, constrsfsfd raints.maxWidth >= 1000; retull : const _AppDrawer(), body: Row(children: [ if (isWide) const _LeftNav(), Expanded( child: SafeArea( child: SingleChildScrollView( padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18), child: Column( crossAxisAlignment: CrossAxisAlignment.start, children: const [ _TopHeader(), SizedBox(height: 18), _OverviewRow(), SizedBox(height: 22), _LowerRow(), ], ), ), ), ), ]), ); }); } }
 
-ialApp( title: 'InsureAI Dashboard (test123)', debugShowCheckedModeBanner: false, theme: ThemeData( primaryColor: const Color(0xFF0A6ED1), colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0A6ED1)), scaffoldBackgroundColor: const Color(0xFFF6FAFC), ), home: const DashboardScreen(), ); } }
+class WealthAppMock extends StatelessWidget { const WealthAppMock({super.key});
 
-class DashboardScreen extends StatelessWidget { const DashboardScreen({super.key});
 
-@override Widget build(BuildContext context) { return LayoutBuilder(builder: (context, constrsfsfd raints.maxWidth >= 1000; retull : const _AppDrawer(), body: Row(children: [ if (isWide) const _LeftNav(), Expanded( child: SafeArea( child: SingleChildScrollView( padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18), child: Column( crossAxisAlignment: CrossAxisAlignment.start, children: const [ _TopHeader(), SizedBox(height: 18), _OverviewRow(), SizedBox(height: 22), _LowerRow(), ], ), ), ), ), ]), ); }); } }
 
-ialApp( title: 'InsureAI Dashboard (test123)', debugShowCheckedModeBanner: false, theme: ThemeData( primaryColor: const Color(0xFF0A6ED1), colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0A6ED1)), scaffoldBackgroundColor: const Color(0xFFF6FAFC), ), home: const DashboardScreen(), ); } }
 
-class DashboardScreen extends StatelessWidget { const DashboardScreen({super.key});
 
-@override Widget build(BuildContext context) { return LayoutBuilder(builder: (context, constrsfsfd raints.maxWidth >= 1000; retull : const _AppDrawer(), body: Row(children: [ if (isWide) const _LeftNav(), Expanded( child: SafeArea( child: SingleChildScrollView( padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18), child: Column( crossAxisAlignment: CrossAxisAlignment.start, children: const [ _TopHeader(), SizedBox(height: 18), _OverviewRow(), SizedBox(height: 22), _LowerRow(), ], ), ), ), ), ]), ); }); } }
+@override Widget build(BuildContext context) { return MaterialApp( title: 'InsureAI - Dashboard', theme: ThemeData( brightness: Brightness.light, primaryColor: const Color(0xFF0A6ED1), colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue) .copyWith(secondary: const Color(0xFFFFC107)), scaffoldBackgroundColor: const Color(0xFFF6FAFC), useMaterial3: false, ), home: const DashboardPage(), debugShowCheckedModeBanner: false, ); } }
 
+
+
+
+
+class DashboardPage extends StatelessWidget { const DashboardPage({super.key});
+
+
+
+
+
+@override Widget build(BuildContext context) { return LayoutBuilder(builder: (context, constraints) { final wide = constraints.maxWidth >= 1000; return Scaffold( drawer: wide ? null : const _AppDrawer(), body: Row( children: [ if (wide) const _LeftNav(), // permanent left nav on wide screens Expanded( child: SafeArea( child: SingleChildScrollView( padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18), child: Column( crossAxisAlignment: CrossAxisAlignment.start, children: [ _TopBar(), const SizedBox(height: 18), _OverviewCardsRow(), const SizedBox(height: 22), _LowerBoxes(), ], ), ), ), ), ], ), ); }); } }
+
+
+
+
+
+/// Top area: Welcome text + Add Task button class _TopBar extends StatelessWidget { @override Widget build(BuildContext context) { return Row( crossAxisAlignment: CrossAxisAlignment.start, children: [ Expanded( child: Column( crossAxisAlignment: CrossAxisAlignment.start, children: [ Text( 'Welcome back, Agent Lee!', style: Theme.of(context).textTheme.headline5?.copyWith( fontWeight: FontWeight.w800, color: Colors.black87, ), ), const SizedBox(height: 6), Text( "Here's your snapshot for ${_formatDate(DateTime.now())}.", style: Theme.of(context).textTheme.bodyMedium?.copyWith( color: Colors.black54, ), ), ]), ), ElevatedButton.icon( onPressed: () {}, icon: const Icon(Icons.add), label: const Text('+ Add Task'), style: ElevatedButton.styleFrom( backgroundColor: const Color(0xFF0A6ED1), padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 12.0), shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(8), ), ), ), ], ); }
+
+
+
+
+
+static String _formatDate(DateTime d) => '${_monthName(d.month)} ${d.day}, ${d.year}';
+
+
+
+
+
+static String _monthName(int m) { const names = [ '', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ]; return names[m]; } }
+
+
+
+
+
+/// Row of three summary cards (Hot Leads, Upcoming Renewals, MDRT Progress) class _OverviewCardsRow extends StatelessWidget { @override Widget build(BuildContext context) { return Wrap( spacing: 18, runSpacing: 12, children: [ _SummaryCard( title: 'Hot Leads', value: '7', accent: Colors.blue.shade700, ), _SummaryCard( title: 'Upcoming Renewals', value: '12', accent: Colors.cyan.shade600, ), _SummaryCard( title: 'MDRT Progress', value: '65%', accent: Colors.amber.shade700, ), ], ); } }
+
+
+
+
+
+class _SummaryCard extends StatelessWidget { final String title; final String value; final Color accent; const _SummaryCard( {required this.title, required this.value, required this.accent});
+
+
+
+
+
+@override Widget build(BuildContext context) { final cardWidth = 300.0; return Container( width: cardWidth, height: 110, padding: const EdgeInsets.all(16), decoration: BoxDecoration( color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: const [ BoxShadow( color: Color.fromRGBO(16, 24, 40, 0.04), blurRadius: 10, offset: Offset(0, 6)) ], ), child: Row( children: [ // colored left edge Container( width: 6, height: double.infinity, decoration: BoxDecoration( color: accent, borderRadius: const BorderRadius.only( topLeft: Radius.circular(8), bottomLeft: Radius.circular(8), ), ), ), const SizedBox(width: 12), Expanded( child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [ Text(title, style: const TextStyle( fontWeight: FontWeight.w600, color: Colors.black54)), const Spacer(), Text(value, style: const TextStyle( fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)), ]), ) ], ), ); } }
+
+
+
+
+
+/// Lower row with Today's Tasks and AI Activity Feed class _LowerBoxes extends StatelessWidget { @override Widget build(BuildContext context) { return Wrap( spacing: 18, runSpacing: 18, children: [ ConstrainedBox( constraints: const BoxConstraints(minWidth: 360, maxWidth: 640), child: _CardBox( child: Column( crossAxisAlignment: CrossAxisAlignment.start, children: [ const Text("Today's Tasks", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18)), const SizedBox(height: 12), _TaskRow(label: 'Follow up with John Doe'), _TaskRow(label: 'Prepare proposal for Jane Smith'), _TaskRow(label: 'Send birthday message to Bob Chan'), ], ), ), ), ConstrainedBox( constraints: const BoxConstraints(minWidth: 360, maxWidth: 640), child: _CardBox( child: Column( crossAxisAlignment: CrossAxisAlignment.start, children: [ const Text("AI Activity Feed", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18)), const SizedBox(height: 12), _ActivityItem( leadingIcon: Icons.phone, title: RichText( text: TextSpan( style: const TextStyle(color: Colors.black87, fontSize: 14), children: [ const TextSpan(text: 'Call with '), TextSpan( text: 'Jane Smith', style: const TextStyle( fontWeight: FontWeight.bold, color: Color(0xFF0A6ED1))), const TextSpan( text: ' summarized. AI suggests updating her income. '), WidgetSpan( alignment: PlaceholderAlignment.middle, child: Container( padding: const EdgeInsets.symmetric( horizontal: 8, vertical: 4), margin: const EdgeInsets.only(left: 6), decoration: BoxDecoration( color: Colors.green.shade50, borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.green.shade200), ), child: const Text('Approve', style: TextStyle( color: Colors.green, fontSize: 12)), ), ), ], ), ), subtitle: '5 minutes ago', ), const SizedBox(height: 8), _ActivityItem( leadingIcon: Icons.description, title: RichText( text: const TextSpan( style: TextStyle(color: Colors.black87, fontSize: 14), children: [ TextSpan(text: 'New policy for '), TextSpan( text: 'Bob Chan', style: TextStyle( fontWeight: FontWeight.bold, color: Color(0xFF0A6ED1))), TextSpan(text: ' added via OCR scan.'), ], ), ), subtitle: '1 hour ago'), ], ), ), ), ], ); } }
+
+
+
+
+
+class _CardBox extends StatelessWidget { final Widget child; const _CardBox({required this.child});
+
+
+
+
+
+@override Widget build(BuildContext context) { return Container( padding: const EdgeInsets.all(18), margin: const EdgeInsets.only(bottom: 6), decoration: BoxDecoration( color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: const [ BoxShadow( color: Color.fromRGBO(16, 24, 40, 0.04), blurRadius: 10, offset: Offset(0, 6)) ], ), child: child, ); } }
+
+
+
+
+
+class _TaskRow extends StatefulWidget { final String label; const _TaskRow({required this.label});
+
+
+
+
+
+@override State<_TaskRow> createState() => _TaskRowState(); }
+
+
+
+
+
+class _TaskRowState extends State<_TaskRow> { bool checked = false; @override Widget build(BuildContext context) { return Padding( padding: const EdgeInsets.symmetric(vertical: 8.0), child: Row(children: [ Checkbox( value: checked, onChanged: (v) { setState(() { checked = v ?? false; }); }), Expanded(child: Text(widget.label)), ]), ); } }
+
+
+
+
+
+class _ActivityItem extends StatelessWidget { final IconData leadingIcon; final Widget title; final String subtitle; const _ActivityItem( {required this.leadingIcon, required this.title, required this.subtitle});
+
+
+
+
+
+@override Widget build(BuildContext context) { return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [ Container( padding: const EdgeInsets.all(8), margin: const EdgeInsets.only(right: 12), decoration: BoxDecoration( color: Colors.pink.shade50, borderRadius: BorderRadius.circular(8), ), child: Icon(leadingIcon, size: 18, color: Colors.pink.shade400), ), Expanded( child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [ title, const SizedBox(height: 6), Text(subtitle, style: const TextStyle(color: Colors.black45)), ]), ) ]); } }
+
+
+
+
+
+/// Left navigation - used as a Drawer on small screens or permanent column on wide screens. class _LeftNav extends StatelessWidget { const _LeftNav();
+
+
+
+
+
+@override Widget build(BuildContext context) { return Container( width: 220, padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 12), decoration: const BoxDecoration( color: Colors.white, border: Border( right: BorderSide(color: Color(0xFFE8EEF3), width: 1), ), ), child: Column( crossAxisAlignment: CrossAxisAlignment.start, children: [ // Logo / title Padding( padding: const EdgeInsets.symmetric(horizontal: 12), child: Row( children: [ Container( width: 36, height: 36, decoration: BoxDecoration( color: const Color(0xFF0A6ED1), borderRadius: BorderRadius.circular(6), ), child: const Center( child: Text('IA', style: TextStyle( color: Colors.white, fontWeight: FontWeight.bold)), ), ), const SizedBox(width: 10), const Text('InsureAI', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)), ], ), ), const SizedBox(height: 20), Expanded( child: ListView( padding: const EdgeInsets.symmetric(vertical: 8), children: [ _NavItem(label: 'Dashboard', icon: Icons.dashboard, active: true), _NavItem(label: 'Clients', icon: Icons.people), _NavItem(label: 'Policies', icon: Icons.folder), _NavItem(label: 'Analytics', icon: Icons.bar_chart), _NavItem(label: 'Calculators', icon: Icons.calculate), _NavItem(label: 'Inbox', icon: Icons.mail), ], ), ), const SizedBox(height: 8), _NavItem(label: 'Settings', icon: Icons.settings, dense: true), ], ), ); } }
+
+
+
+
+
+class _AppDrawer extends StatelessWidget { const _AppDrawer();
+
+
+
+
+@override Widget build(BuildContext context) { return Drawer( child: Column(children: [ DrawerHeader( child: Row(children: [ Container( width: 42, height: 42, decoration: BoxDecoration( color: const Color(0xFF0A6ED1), borderRadius: BorderRadius.circular(6)), child: const Center( child: Text('IA', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))), ), const SizedBox(width: 12), const Text('InsureAI', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)), ])), const Divider(height: 1), Expanded( child: ListView( children: const [ _NavItem(label: 'Dashboard', icon: Icons.dashboard, active: true), _NavItem(label: 'Clients', icon: Icons.people), _NavItem(label: 'Policies', icon: Icons.folder), _NavItem(label: 'Analytics', icon: Icons.bar_chart), _NavItem(label: 'Calculators', icon: Icons.calculate), _NavItem(label: 'Inbox', icon: Icons.mail), ], ), ), const Divider(height: 1), const Padding( padding: EdgeInsets.all(12), child: _NavItem(label: 'Settings', icon: Icons.settings, dense: true), ) ]), ); } }
+
+
+
+
+
+class _NavItem extends StatelessWidget { final String label; final IconData icon; final bool active; final bool dense; const _NavItem( {required this.label, required this.icon, this.active = false, this.dense = false});
+
+
+
+
+
+
+@override Widget build(BuildContext context) { final textStyle = TextStyle( fontWeight: active ? FontWeight.w700 : FontWeight.w500, color: active ? const Color(0xFF0A6ED1) : Colors.black87); return Padding( padding: EdgeInsets.symmetric(vertical: dense ? 6 : 8.0), child: ListTile( dense: dense, leading: Icon(icon, color: active ? const Color(0xFF0A6ED1) : Colors.black54), title: Text(label, style: textStyle), tileColor: active ? Colors.blue.shade50 : null, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)), onTap: () {}, ), ); } }
