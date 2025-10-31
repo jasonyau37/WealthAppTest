@@ -86,7 +86,7 @@ jobs:
           cp build/web/index.html build/web/404.html || true
           touch build/web/.nojekyll
           ls -ltr build/web/main.dart.js
-
+          md5sum build/web/main.dart.js
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
