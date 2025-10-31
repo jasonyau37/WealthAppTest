@@ -1,4 +1,3 @@
-contents:
 name: Build Android APK and Flutter Web, deploy Web to GitHub Pages
 
 # Grant the minimum write permissions required for the workflow to push to the repo and update Pages
