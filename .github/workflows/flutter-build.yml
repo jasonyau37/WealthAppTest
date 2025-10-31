@@ -71,7 +71,7 @@ jobs:
 
       - name: debug
         run: ls build/web
-          sha256sum build/web/main.dart.js
+          shasum -a 256 build/web/main.dart.js
 
       - name: Ensure relative base href in index.html
         run: |
